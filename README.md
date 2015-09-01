@@ -1,12 +1,25 @@
-# service-test-py
-Utilities for creating (micro)service tests. Based on Mountebank.
+# mountepy
+Utilities for creating (micro)service tests. Based on Mountebank. Test-framework-agnostic (use unittest, nose, py.test or whatever... but I like py.test).
 
 **This is a work in progress.**
 
 See the roadmap below for planned features.
 
+Tested on Python 3.4
+
 ## Installation
+Install NodeJS and NPM. On Ubuntu it's `sudo apt-get install -y nodejs-legacy npm`
+
+Install Mountebank according to instructions [here](https://github.com/bbyars/mountebank)
+
 **TBD**
+
+## Testing
+Install and run tox
+```
+pip install tox
+tox
+```
 
 ## Examples
 **TBD**
@@ -23,6 +36,6 @@ See the roadmap below for planned features.
   * *(Maybe for another project)* This configuration can be CloudFoundry specific (VCAP_SERVICES, VCAP_APPLICATION).
   * *(Maybe for another project)* Validate if services defined in VCAP_SERVICES are in application's manifest.
 2. Class for managing all spawned processes to enable faster overall start.
-3. Decide if it's better to just download mountebank executable or to install it with npm.
-4. Assign services and Mountebank to an unused port. Use [port-for](https://pypi.python.org/pypi/port-for/)?
-5. (Maybe for another project) Add verifier of 
+3. Assign services and Mountebank to an unused port. Use [port-for](https://pypi.python.org/pypi/port-for/)?
+4. Add example of calling services through client generated with [Bravado](https://github.com/Yelp/bravado)
+5. Make Python 2.7 compatible.
