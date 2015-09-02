@@ -35,6 +35,7 @@ tox
   * Services need to take configuration through environment variables.
   * *(Maybe for another project)* This configuration can be CloudFoundry specific (VCAP_SERVICES, VCAP_APPLICATION).
   * *(Maybe for another project)* Validate if services defined in VCAP_SERVICES are in application's manifest.
+2. Building with Travis, coverage reports with Coveralls.
 2. Class for managing all spawned processes to enable faster overall start.
 3. Assign services and Mountebank to an unused port. Use [port-for](https://pypi.python.org/pypi/port-for/)?
 4. Add example of calling services through client generated with [Bravado](https://github.com/Yelp/bravado)

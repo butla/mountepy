@@ -1,0 +1,8 @@
+language: python
+python:
+  - 3.4
+install:
+  - npm install -g mountebank
+  - which mb
+  - pip install tox
+script: tox
