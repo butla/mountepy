@@ -3,14 +3,13 @@ mountepy
 
 [![Build Status](https://travis-ci.org/butla/mountepy.svg?branch=master)](https://travis-ci.org/butla/mountepy)
 [![Coverage Status](https://coveralls.io/repos/butla/mountepy/badge.svg?branch=master&service=github)](https://coveralls.io/github/butla/mountepy?branch=master)
+[![Dependency Status](https://gemnasium.com/butla/mountepy.svg)](https://gemnasium.com/butla/mountepy)
 
-Utilities for creating (micro)service tests. Based on Mountebank. Test-framework-agnostic (use unittest, nose, py.test or whatever... but I like py.test).
-
-**This is a work in progress.**
-
-See the roadmap below for planned features.
-
-Tested on Python 3.4
+Utilities for creating (micro)service tests. Based on Mountebank.
+* **This is a work in progress.**
+* Test-framework-agnostic (use unittest, nose, py.test or whatever... but I like py.test).
+* Tested on Python 3.4, Ubuntu 14 x64.
+* Planned features in the roadmap below.
 
 ## Installation
 Install NodeJS and NPM. On Ubuntu it's `sudo apt-get install -y nodejs-legacy npm`
@@ -40,8 +39,8 @@ tox
   * Services need to take configuration through environment variables.
   * *(Maybe for another project)* This configuration can be CloudFoundry specific (VCAP_SERVICES, VCAP_APPLICATION).
   * *(Maybe for another project)* Validate if services defined in VCAP_SERVICES are in application's manifest.
-2. Building with Travis, coverage reports with Coveralls.
 2. Class for managing all spawned processes to enable faster overall start.
 3. Assign services and Mountebank to an unused port. Use [port-for](https://pypi.python.org/pypi/port-for/)?
 4. Add example of calling services through client generated with [Bravado](https://github.com/Yelp/bravado)
 5. Make Python 2.7 compatible.
+6. Add to PyPI.
