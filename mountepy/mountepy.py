@@ -32,23 +32,27 @@ def _wait_for_endpoint(url, timeout=5.0):
 
 class Mountebank:
 
+    """
+    Manages Mountebank instance. Can start and stop the process.
+    """
+
     def __init__(self):
-        self._hostname = 'localhost'
-        self._port = 2525
-        self._imposters_url = 'http://{}:{}/imposters'.format(self._hostname, self._port)
+        self.hostname = 'localhost'
+        self.port = 2525
+        self.imposters_url = 'http://{}:{}/imposters'.format(self.hostname, self.port)
 
     def add_imposter(self, imposter_cfg):
         """
         :param dict imposter_cfg: Mountebank configuration for an impostor.
         :rtype: None
         """
-        resp = requests.post(self._imposters_url, json=imposter_cfg)
+        resp = requests.post(self.imposters_url, json=imposter_cfg)
         resp.raise_for_status()
 
     def start(self):
         mb_proc = subprocess.Popen('mb')
         try:
-            _wait_for_endpoint(self._imposters_url)
+            _wait_for_endpoint(self.imposters_url)
         except Exception:
             logging.exception("Mountebank didn't start")
             self.stop()
