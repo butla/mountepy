@@ -12,11 +12,9 @@ Utilities for creating (micro)service tests. Based on Mountebank.
 * Planned features in the roadmap below.
 
 ## Installation
-Install NodeJS and NPM. On Ubuntu it's `sudo apt-get install -y nodejs-legacy npm`
-
-Install Mountebank according to instructions [here](https://github.com/bbyars/mountebank)
-
-**TBD**
+1. Install NodeJS and NPM. On Ubuntu it's `sudo apt-get install -y nodejs-legacy npm`
+2. Install Mountebank according to instructions [here](https://github.com/bbyars/mountebank)
+3. `pip3 install -e git://github.com/butla/mountepy.git#egg=mountepy`
 
 ## Testing
 Install and run tox
