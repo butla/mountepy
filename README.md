@@ -1,4 +1,9 @@
-# mountepy
+mountepy
+========
+
+[![Build Status](https://travis-ci.org/butla/mountepy.svg?branch=master)](https://travis-ci.org/butla/mountepy)
+[![Coverage Status](https://coveralls.io/repos/butla/mountepy/badge.svg?branch=master&service=github)](https://coveralls.io/github/butla/mountepy?branch=master)
+
 Utilities for creating (micro)service tests. Based on Mountebank. Test-framework-agnostic (use unittest, nose, py.test or whatever... but I like py.test).
 
 **This is a work in progress.**

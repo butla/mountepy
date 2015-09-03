@@ -3,6 +3,9 @@ python:
   - 3.4
 install:
   - npm install -g mountebank
-  - which mb
   - pip install tox
-script: tox
+  - pip install coveralls
+script:
+    tox
+after_success:
+    coveralls
