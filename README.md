@@ -9,13 +9,17 @@ Utilities for creating (micro)service tests. Based on Mountebank.
 * **This is a work in progress.**
 * Test-framework-agnostic (use unittest, nose, py.test or whatever... but I like py.test).
 * Tested on Python 3.4, Ubuntu 14 x64.
-* Planned features in the roadmap below.
+* Planned features in the road map below.
 
 ## Installation
 1. Install NodeJS and NPM. On Ubuntu it's `sudo apt-get install -y nodejs-legacy npm`
 2. Install Mountebank `npm install -g mountebank --production`
-3. `pip3 install -e git://github.com/butla/mountepy.git#egg=mountepy`
-# TODO say how to do with a commit id
+3. `pip3 install git+git://github.com/butla/mountepy.git`
+
+If you want to lock on a specific version in requirements.txt then add to it a line pointing to a specific commit, e.g.:
+```
+git+git://github.com/butla/mountepy.git@456f22c
+```
 
 ## Testing
 Install and run tox
@@ -41,6 +45,7 @@ tox
   1. This configuration can be CloudFoundry specific (VCAP_SERVICES, VCAP_APPLICATION).
   1. Validate if services defined in VCAP_SERVICES are in application's manifest.
 1. Add example of calling services through client generated with [Bravado](https://github.com/Yelp/bravado)
+1. Remove MANIFEST.in like they did in PyScaffold.
 1. Make Python 2.7 compatible... maybe.
 1. Check if cycling port_for.is_available() is as good as _wait_for_endpoint. If not, add that to port_for.
 1. Add to PyPI.

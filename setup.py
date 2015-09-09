@@ -2,8 +2,8 @@
 
 import os.path
 from setuptools import setup
-from configparser import ConfigParser
 
+version = '0.0.1'
 
 # TODO extract this automatically without the specific versions
 requirements = [
@@ -11,21 +11,13 @@ requirements = [
     'requests',
 ]
 
-with open('README.md') as readme_file:
+setup_dir = os.path.dirname(os.path.abspath(__file__))
+with open(os.path.join(setup_dir, 'README.md')) as readme_file:
     readme = readme_file.read()
-
-
-def _get_package_version():
-    setup_cfg_path = os.path.realpath(__file__)[:-2] + 'cfg'
-
-    config = ConfigParser()
-    config.read(setup_cfg_path)
-    return config['metadata']['version']
-
 
 setup(
     name='mountepy',
-    version=_get_package_version(),
+    version=version,
     description='Utilities for creating (micro)service tests. Based on Mountebank.',
     long_description=readme,
     author='Michał Bultrowicz',
