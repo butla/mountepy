@@ -6,10 +6,9 @@ mountepy
 [![Requirements Status](https://requires.io/github/butla/mountepy/requirements.svg?branch=master)](https://requires.io/github/butla/mountepy/requirements/?branch=master)
 
 Utilities for creating (micro)service tests. Based on Mountebank.
-* **This is a work in progress.**
 * Test-framework-agnostic (use unittest, nose, py.test or whatever... but I like py.test).
 * Tested on Python 3.4, Ubuntu 14 x64.
-* Planned features in the road map below.
+* Planned features in the road map below (this is still under development).
 
 ## Installation
 1. Install NodeJS and NPM. On Ubuntu it's `sudo apt-get install -y nodejs-legacy npm`
