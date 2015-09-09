@@ -3,7 +3,7 @@ mountepy
 
 [![Build Status](https://travis-ci.org/butla/mountepy.svg?branch=master)](https://travis-ci.org/butla/mountepy)
 [![Coverage Status](https://coveralls.io/repos/butla/mountepy/badge.svg?branch=master&service=github)](https://coveralls.io/github/butla/mountepy?branch=master)
-[![Dependency Status](https://gemnasium.com/butla/mountepy.svg)](https://gemnasium.com/butla/mountepy)
+[![Requirements Status](https://requires.io/github/butla/mountepy/requirements.svg?branch=master)](https://requires.io/github/butla/mountepy/requirements/?branch=master)
 
 Utilities for creating (micro)service tests. Based on Mountebank.
 * **This is a work in progress.**
@@ -13,7 +13,7 @@ Utilities for creating (micro)service tests. Based on Mountebank.
 
 ## Installation
 1. Install NodeJS and NPM. On Ubuntu it's `sudo apt-get install -y nodejs-legacy npm`
-2. Install Mountebank according to instructions [here](https://github.com/bbyars/mountebank)
+2. Install Mountebank `npm install -g mountebank --production`
 3. `pip3 install -e git://github.com/butla/mountepy.git#egg=mountepy`
 
 ## Testing
