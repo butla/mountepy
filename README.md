@@ -15,6 +15,7 @@ Utilities for creating (micro)service tests. Based on Mountebank.
 1. Install NodeJS and NPM. On Ubuntu it's `sudo apt-get install -y nodejs-legacy npm`
 2. Install Mountebank `npm install -g mountebank --production`
 3. `pip3 install -e git://github.com/butla/mountepy.git#egg=mountepy`
+# TODO say how to do with a commit id
 
 ## Testing
 Install and run tox
@@ -32,13 +33,14 @@ tox
 * Why not [WireMock](https://github.com/tomakehurst/wiremock)? I don't want to be forced to install Java to run tests and it doesn't seem to have more features than Mountebank.
 * Why create a new project? There already is a [Python Mountebank wrapper](https://github.com/aholyoke/mountebank-python), but it doesn't offer much.
 
-## Roadmap
-1. Wrapper classes for starting and stopping services and Mountebank.
-  * Services need to take configuration through environment variables.
-  * *(Maybe for another project)* This configuration can be CloudFoundry specific (VCAP_SERVICES, VCAP_APPLICATION).
-  * *(Maybe for another project)* Validate if services defined in VCAP_SERVICES are in application's manifest.
-2. Class for managing all spawned processes to enable faster overall start.
-3. Assign services and Mountebank to an unused port. Use [port-for](https://pypi.python.org/pypi/port-for/)?
-4. Add example of calling services through client generated with [Bravado](https://github.com/Yelp/bravado)
-5. Make Python 2.7 compatible.
-6. Add to PyPI.
+## Road map
+1. Class for managing all spawned processes to enable faster overall start.
+1. Simpler impostor definition.
+1. Provide examples.
+1. Services that take configuration through environment variables. *(Maybe for another project)*
+  1. This configuration can be CloudFoundry specific (VCAP_SERVICES, VCAP_APPLICATION).
+  1. Validate if services defined in VCAP_SERVICES are in application's manifest.
+1. Add example of calling services through client generated with [Bravado](https://github.com/Yelp/bravado)
+1. Make Python 2.7 compatible... maybe.
+1. Check if cycling port_for.is_available() is as good as _wait_for_endpoint. If not, add that to port_for.
+1. Add to PyPI.

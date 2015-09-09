@@ -1,3 +1,6 @@
+# pid file created during tests
+*.pid
+
 # Idea files
 *.iml
 .idea/

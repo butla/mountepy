@@ -1,21 +1,31 @@
 # -*- coding: utf-8 -*-
 
+import os.path
 from setuptools import setup
-import mountepy
+from configparser import ConfigParser
 
 
-version = mountepy.__version__
+# TODO extract this automatically without the specific versions
+requirements = [
+    'port_for',
+    'requests',
+]
 
 with open('README.md') as readme_file:
     readme = readme_file.read()
 
-requirements = [
-    'requests',
-]
+
+def _get_package_version():
+    setup_cfg_path = os.path.realpath(__file__)[:-2] + 'cfg'
+
+    config = ConfigParser()
+    config.read(setup_cfg_path)
+    return config['metadata']['version']
+
 
 setup(
     name='mountepy',
-    version=version,
+    version=_get_package_version(),
     description='Utilities for creating (micro)service tests. Based on Mountebank.',
     long_description=readme,
     author='Michał Bultrowicz',
@@ -30,6 +40,7 @@ setup(
     license="MIT",
     keywords='mountepy mountebank microservice',
     classifiers=[
+        'Development Status :: 3 - Alpha'
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
