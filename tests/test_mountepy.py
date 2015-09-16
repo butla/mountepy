@@ -19,6 +19,7 @@ def test_service_start_and_cleanup():
     with pytest.raises(requests.exceptions.ConnectionError):
         requests.get(service_url)
 
+
 def test_service_single_string_command():
     single_string_command = 'mb'
     service = HttpService(single_string_command, 12345)

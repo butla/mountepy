@@ -1,3 +1,4 @@
+import atexit
 import logging
 import socket
 import subprocess
@@ -49,6 +50,8 @@ class HttpService:
         :raises TimeoutError: If Mountebank didn't start in time.
         """
         self._service_proc = subprocess.Popen(self._process_command)
+        atexit.register(self.stop)
+
         try:
             _wait_for_port(self.port, timeout=timeout)
         except Exception:
@@ -57,6 +60,7 @@ class HttpService:
             raise
 
     def stop(self):
+        atexit.unregister(self.stop)
         self._service_proc.kill()
         # TODO add timeout and some error
         self._service_proc.wait()
