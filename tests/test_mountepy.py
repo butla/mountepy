@@ -81,6 +81,39 @@ def test_mountebank_set_impostor_and_cleanup():
         mb.add_imposter(imposter_config)
 
 
+def test_mountebank_simple_impostor_add():
+    test_port = port_for.select_random()
+    test_response = 'Just some reponse body (that I used to know)'
+
+    with Mountebank() as mb:
+        mb.add_imposter_simple(
+            port=test_port,
+            method='POST',
+            path='/some-path',
+            status_code=201,
+            response=test_response
+        )
+        response = requests.post('http://localhost:{}/some-path'.format(test_port))
+        assert response.status_code == 201
+        assert response.text == test_response
+
+
+def test_mountebank_impostor_reset():
+    test_port = port_for.select_random()
+    with Mountebank() as mb:
+        imposters_url = 'http://localhost:{}/imposters'.format(mb.port)
+        mb.add_imposter_simple(
+            port=test_port,
+            method='GET',
+            path='/',
+            status_code=200,
+            response=''
+        )
+        assert requests.get(imposters_url).json()['imposters'] != []
+        mb.reset()
+        assert requests.get(imposters_url).json()['imposters'] == []
+
+
 def test_service_group_start():
     test_service_1 = HttpService(TEST_SERVICE_COMMAND)
     test_service_2 = HttpService(TEST_SERVICE_COMMAND)
@@ -102,6 +135,4 @@ def test_service_group_stop_timeout():
     services = ServiceGroup(HttpService(TEST_SERVICE_COMMAND), HttpService(TEST_SERVICE_COMMAND))
     services.start()
     with pytest.raises(TimeoutError):
-        services.stop(timeout=0.000001)
-
-#TODO reset imposters
+        services.stop(timeout=0.00000001)

@@ -98,11 +98,64 @@ class Mountebank(HttpService):
 
     def add_imposter(self, imposter_cfg):
         """
+        Adds a HTTP service stub (imposter) to Mountebank instance.
         :param dict imposter_cfg: Mountebank configuration for an impostor.
         :rtype: None
         """
         resp = requests.post(self._imposters_url, json=imposter_cfg)
         resp.raise_for_status()
+
+    def add_imposter_simple(self, port, method, path, status_code, response):
+        """
+        Adds a HTTP service stub (imposter) to Mountebank instance.
+        Takes a simplified configuration.
+        :param int port: port the imposter will listen on
+        :param str method: HTTP method that the imposter will wait for
+        :param str path: HTTP path the imposter will wait for
+        :param int status_code: HTTP status code the imposter will return
+        :param str response: body of the imposters response
+        :rtype: None
+        """
+        imposter_config = {
+            'port': port,
+            'protocol': 'http',
+            'stubs': [
+                {
+                    'responses': [
+                        {
+                            'is': {
+                                'statusCode': status_code,
+                                'headers': {
+                                    'Content-Type': 'application/json'
+                                },
+                                'body': response
+                            }
+                        }
+                    ],
+                    'predicates': [
+                        {
+                            'and': [
+                                {
+                                    'equals': {
+                                        'path': path,
+                                        'method': method,
+                                    }
+                                },
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+        self.add_imposter(imposter_config)
+
+    def reset(self):
+        """
+        Removes configured imposters (HTTP stubs).
+        :rtype: None
+        """
+        # TODO add validation
+        requests.delete(self._imposters_url)
 
 
 class ServiceGroup:
