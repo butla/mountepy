@@ -1,4 +1,5 @@
 import atexit
+import concurrent.futures
 import logging
 import socket
 import subprocess
@@ -15,7 +16,7 @@ def _wait_for_port(port, host='localhost', timeout=5.0):
             with socket.create_connection((host, port)):
                 break
         except ConnectionRefusedError:
-            time.sleep(0.001)
+            time.sleep(0.01)
             if time.perf_counter() - start_time >= timeout:
                 raise TimeoutError('Waited too long for the port to start accepting connections.')
 
@@ -47,7 +48,7 @@ class HttpService:
         Starts service process and waits for it to start accepting connections.
         :param float timeout: How long to wait before raising an error.
         :rtype: None
-        :raises TimeoutError: If Mountebank didn't start in time.
+        :raises TimeoutError: If the service process didn't start in time.
         """
         self._service_proc = subprocess.Popen(self._process_command)
         atexit.register(self.stop)
@@ -102,3 +103,51 @@ class Mountebank(HttpService):
         """
         resp = requests.post(self._imposters_url, json=imposter_cfg)
         resp.raise_for_status()
+
+
+class ServiceGroup:
+
+    """
+    Manages a group of service processes.
+    Can be used to concurrently start or stop more than one service.
+    """
+
+    def __init__(self, *service_processes):
+        """
+        :param service_processes: A list of HttpService objects.
+        Don't start or stop them individually after passing them here.
+        :raises TimeoutError:
+        """
+        self._services = service_processes
+        self._executor = concurrent.futures.ThreadPoolExecutor(max_workers=7)
+
+    def start(self, timeout=5.0):
+        """
+        Starts all the service processes and waits them to start accepting connections.
+        :param float timeout: How long to wait before raising an error.
+        :rtype: None
+        :raises TimeoutError: If all of the services didn't start in time.
+        """
+        start_futures = [self._executor.submit(service.start) for service in self._services]
+        results = concurrent.futures.wait(start_futures, timeout=timeout)
+        if results.not_done:
+            raise TimeoutError('Not all processes started in time.')
+
+    def stop(self, timeout=5.0):
+        """
+        Stops all the service processes. Waits for full stop.
+        :param float timeout: How long to wait before raising an error.
+        :rtype: None
+        :raises TimeoutError: If all of the services didn't stop in time.
+        """
+        stop_futures = [self._executor.submit(service.stop) for service in self._services]
+        results = concurrent.futures.wait(stop_futures, timeout=timeout)
+        if results.not_done:
+            raise TimeoutError('Not all processes stopped in time.')
+
+    def __enter__(self):
+        self.start()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.stop()

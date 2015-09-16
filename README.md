@@ -37,7 +37,6 @@ tox
 * Why create a new project? There already is a [Python Mountebank wrapper](https://github.com/aholyoke/mountebank-python), but it doesn't offer much.
 
 ## Road map
-1. Class for managing all spawned processes to enable faster overall start.
 1. Simpler impostor definition.
 1. Provide examples.
 1. Services that take configuration through environment variables. *(Maybe for another project)*
@@ -45,6 +44,7 @@ tox
   1. Validate if services defined in VCAP_SERVICES are in application's manifest.
 1. Add example of calling services through client generated with [Bravado](https://github.com/Yelp/bravado)
 1. Remove MANIFEST.in like they did in PyScaffold.
+1. Requirements in setup.py should be extracted automatically from requirements.txt.
 1. Make Python 2.7 compatible... maybe.
 1. Check if cycling port_for.is_available() is as good as _wait_for_endpoint. If not, add that to port_for.
 1. Add to PyPI.
