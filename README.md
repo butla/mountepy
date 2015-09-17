@@ -31,7 +31,7 @@ tox
 **TBD**
 
 ## Motivation
-* Why Mountebank? It can be deployed as standalone application, is actively developed and supports TCP mocks which can be used to simulate broken HTTP messages.
+* Why [Mountebank](https://github.com/bbyars/mountebank)? It can be deployed as standalone application, is actively developed and supports TCP mocks which can be used to simulate broken HTTP messages.
 * Why not [Pretenders](https://github.com/pretenders/pretenders)? Doesn't support TCP, the development doesn't seem to be active.
 * Why not [WireMock](https://github.com/tomakehurst/wiremock)? I don't want to be forced to install Java to run tests and it doesn't seem to have more features than Mountebank.
 * Why create a new project? There already is a [Python Mountebank wrapper](https://github.com/aholyoke/mountebank-python), but it doesn't offer much.
@@ -39,6 +39,7 @@ tox
 ## Road map
 1. Fix all TODOs
 1. Provide examples.
+1. Translate this README to rST.
 1. Add to PyPI.
 1. Services that take configuration through environment variables. *(Maybe for another project)*
   1. This configuration can be CloudFoundry specific (VCAP_SERVICES, VCAP_APPLICATION).

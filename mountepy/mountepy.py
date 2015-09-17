@@ -1,6 +1,7 @@
 import atexit
 import concurrent.futures
 import logging
+import collections
 import socket
 import subprocess
 import time
@@ -81,6 +82,10 @@ class HttpService:
             return command
 
 
+# A configuration for a simple Mountebank impostor, not including the port
+HttpStub = collections.namedtuple('HttpStub', ['method', 'path', 'status_code', 'response'])
+
+
 class Mountebank(HttpService):
 
     """
@@ -147,6 +152,50 @@ class Mountebank(HttpService):
                 }
             ]
         }
+        self.add_imposter(imposter_config)
+
+    def add_imposters_simple(self, port, stubs):
+        """
+        Adds a Mountebank imposter with multiple HTTP stubs on one port.
+        Takes a simplified configuration in comparison to "add_imposter".
+        :param int port: port the imposter will listen on
+        :param list[HttpStub] stubs: HTTP stubs to be created on the port
+        :rtype: None
+        """
+        # TODO make this method and add_imposter_simple more elegant and less duplicated
+        imposter_config = {
+            'port': port,
+            'protocol': 'http',
+            'stubs': []
+        }
+
+        for stub in stubs:
+            stub_json = {
+                'responses': [
+                    {
+                        'is': {
+                            'statusCode': stub.status_code,
+                            'headers': {
+                                'Content-Type': 'application/json'
+                            },
+                            'body': stub.response
+                        }
+                    }
+                ],
+                'predicates': [
+                    {
+                        'and': [
+                            {
+                                'equals': {
+                                    'path': stub.path,
+                                    'method': stub.method,
+                                    }
+                            },
+                            ]
+                    }
+                ]
+            }
+            imposter_config['stubs'].append(stub_json)
         self.add_imposter(imposter_config)
 
     def reset(self):

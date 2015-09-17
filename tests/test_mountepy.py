@@ -4,7 +4,7 @@ import pytest
 import requests
 import sys
 
-from mountepy import Mountebank, HttpService, ServiceGroup
+from mountepy import Mountebank, HttpService, ServiceGroup, HttpStub
 
 # starting Python 3 (current Python) HTTP server on a port, that will be set by HttpService
 TEST_SERVICE_COMMAND = [sys.executable, '-m', 'http.server', '{port}']
@@ -96,6 +96,28 @@ def test_mountebank_simple_impostor_add():
         response = requests.post('http://localhost:{}/some-path'.format(test_port))
         assert response.status_code == 201
         assert response.text == test_response
+
+
+def test_mountebank_simple_impostors_add():
+    test_port = port_for.select_random()
+    test_response_1 = 'Just some reponse body (that I used to know)'
+    test_response_2 = '{"Hey": "a JSON!"}'
+    stub_1 = HttpStub(method='PUT', path='/path-1', status_code=201, response=test_response_1)
+    stub_2 = HttpStub(method='POST', path='/path-2', status_code=202, response=test_response_2)
+
+    with Mountebank() as mb:
+        mb.add_imposters_simple(
+            port=test_port,
+            stubs=[stub_1, stub_2]
+        )
+
+        # TODO get rid of the code duplication
+        response_1 = requests.put('http://localhost:{}/path-1'.format(test_port))
+        assert response_1.status_code == 201
+        assert response_1.text == test_response_1
+        response_2 = requests.post('http://localhost:{}/path-2'.format(test_port))
+        assert response_2.status_code == 202
+        assert response_2.text == test_response_2
 
 
 def test_mountebank_impostor_reset():
