@@ -1,3 +1,4 @@
+import os.path
 import port_for
 import port_for.api
 import pytest
@@ -34,6 +35,21 @@ def test_service_timeout_and_cleanup():
     with pytest.raises(TimeoutError):
         test_service.start(timeout=0.001)
     test_service._service_proc.wait(timeout=3.0)
+
+
+def test_service_env_config():
+    example_service_path = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        'example_service.py'
+    )
+    service_port = port_for.select_random()
+
+    service = HttpService(
+        [sys.executable, example_service_path],
+        port=service_port,
+        env={'TEST_APP_PORT': str(service_port)})
+    with service:
+        assert requests.get(TEST_SERVICE_URL_PATTERN.format(service_port)).text == 'Just some text.'
 
 
 def test_mountebank_set_impostor_and_cleanup():

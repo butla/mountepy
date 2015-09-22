@@ -41,11 +41,11 @@ tox
 1. Provide examples.
 1. Translate this README to rST.
 1. Add to PyPI.
-1. Services that take configuration through environment variables. *(Maybe for another project)*
-  1. This configuration can be CloudFoundry specific (VCAP_SERVICES, VCAP_APPLICATION).
-  1. Validate if services defined in VCAP_SERVICES are in application's manifest.
 1. Add example of calling services through client generated with [Bravado](https://github.com/Yelp/bravado)
 1. Remove MANIFEST.in like they did in PyScaffold.
 1. Requirements in setup.py should be extracted automatically from requirements.txt.
 1. Make Python 2.7 compatible... maybe.
 1. Check if cycling port_for.is_available() is as good as _wait_for_endpoint. If not, add that to port_for.
+
+## Notes
+* [Bottle](https://github.com/bottlepy/bottle) is used to test HTTP services' handler.

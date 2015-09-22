@@ -28,7 +28,7 @@ class HttpService:
     Manages a HTTP service instance on localhost. Can start and stop the process.
     """
 
-    def __init__(self, process_command, port=None):
+    def __init__(self, process_command, port=None, env=None):
         """
         Initializes the object without starting the service process.
         :param process_command: Command that will start the service.
@@ -36,6 +36,8 @@ class HttpService:
         Command strings may contain '{port}' - it will be filled with the provided port.
         :param int port: Port on which the service will listen.
         If not provided then the service will run on a random free port.
+        :param dict env: Environment variables that will be visible for the service process.
+        E.g. {'EXAMPLE_VARIABLE_NAME': 'some_example_value'}
         """
         if port is None:
             self.port = port_for.select_random()
@@ -43,6 +45,7 @@ class HttpService:
             self.port = port
         self._process_command = self._format_process_command(process_command, self.port)
         self._service_proc = None
+        self._service_env = env
 
     def start(self, timeout=5.0):
         """
@@ -51,7 +54,7 @@ class HttpService:
         :rtype: None
         :raises TimeoutError: If the service process didn't start in time.
         """
-        self._service_proc = subprocess.Popen(self._process_command)
+        self._service_proc = subprocess.Popen(self._process_command, env=self._service_env)
         atexit.register(self.stop)
 
         try:
