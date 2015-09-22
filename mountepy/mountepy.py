@@ -10,7 +10,7 @@ import port_for
 import requests
 
 
-def _wait_for_port(port, host='localhost', timeout=5.0):
+def wait_for_port(port, host='localhost', timeout=5.0):
     start_time = time.perf_counter()
     while True:
         try:
@@ -37,6 +37,7 @@ class HttpService:
         :param int port: Port on which the service will listen.
         If not provided then the service will run on a random free port.
         :param dict env: Environment variables that will be visible for the service process.
+        All values of this dictionary should be strings.
         E.g. {'EXAMPLE_VARIABLE_NAME': 'some_example_value'}
         """
         if port is None:
@@ -58,7 +59,7 @@ class HttpService:
         atexit.register(self.stop)
 
         try:
-            _wait_for_port(self.port, timeout=timeout)
+            wait_for_port(self.port, timeout=timeout)
         except Exception:
             logging.exception("Service '%s' didn't start", self._process_command)
             self.stop()
