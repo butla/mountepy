@@ -38,7 +38,6 @@ tox
 * Why create a new project? There already is a [Python Mountebank wrapper](https://github.com/aholyoke/mountebank-python), but it doesn't offer much.
 
 ## Road map
-1. Differentiate between stubs when getting calls from an impostor.
 1. Fix all TODOs.
 1. Fill all imposter match fields.
 1. Provide examples.

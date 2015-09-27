@@ -1,4 +1,3 @@
-import concurrent.futures
 import os.path
 import sys
 
@@ -116,7 +115,7 @@ def test_mountebank_simple_impostor():
         response = requests.post('http://localhost:{}/some-path'.format(test_port), data=test_body)
         assert response.status_code == 201
         assert response.text == test_response
-        assert imposter.wait_for_matches()[0].request.body == test_body
+        assert imposter.wait_for_requests()[0].body == test_body
 
 
 def test_mountebank_multiple_simple_impostors():
@@ -145,7 +144,7 @@ def test_mountebank_impostor_match_timeout():
     with Mountebank() as mb:
         imposter = mb.add_imposter_simple()
         with pytest.raises(TimeoutError):
-            imposter.wait_for_matches(timeout=0.001)
+            imposter.wait_for_requests(timeout=0.001)
 
 
 def test_mountebank_impostor_reset():

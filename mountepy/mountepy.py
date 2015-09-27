@@ -107,42 +107,30 @@ class Imposter:
         self._url = 'http://localhost:{}/imposters/{}'.format(mountebank_port, port)
         self.port = port
 
-    def matches(self):
-        # TODO add a class for stubs, make them identifiable
-        stub_json = requests.get(self._url).json()['stubs'][0]
-        print('Print in code')
-        import pprint
-        pprint.pprint(stub_json)
-        matches = []
-        for match in stub_json.get('matches', []):
-            matches.append(ImposterMatch(request=match['request'], response=match['response']))
-        return matches
+    def requests(self):
+        imposter_json = requests.get(self._url).json()
+        imposter_requests = []
+        for request in imposter_json.get('requests', []):
+            imposter_requests.append(ImposterRequest(
+                body=request['body'],
+                headers=request['headers'],
+                method=request['method'],
+                path=request['path'],
+                query=request['query'],
+                request_from=request['requestFrom'],
+            ))
+        return imposter_requests
 
-    def wait_for_matches(self, count=1, timeout=5.0):
+    def wait_for_requests(self, count=1, timeout=5.0):
         start_time = time.perf_counter()
         while True:
-            matches = self.matches()
+            matches = self.requests()
             if len(matches) >= count:
                 return matches
             else:
                 time.sleep(0.01)
                 if time.perf_counter() - start_time >= timeout:
                     raise TimeoutError('Waited too long for requests on stub.')
-
-
-class ImposterMatch:
-    def __init__(self, request, response):
-        # TODO add timestamp field, use dateutil
-        # TODO add a class for response
-        self.request = ImposterRequest(
-            body=request['body'],
-            headers=request['headers'],
-            method=request['method'],
-            path=request['path'],
-            query=request['query'],
-            request_from=request['requestFrom'],
-        )
-        self.response = response
 
 
 class ImposterRequest:
@@ -155,6 +143,7 @@ class ImposterRequest:
         :param dict query:
         :param str request_from:
         """
+        # TODO add timestamp field, use dateutil
         self.body = body
         self.headers = headers
         self.method = method
@@ -175,7 +164,7 @@ class Mountebank(HttpService):
         :param int port: Port on which Mountebank will listen for impostor configuration commands.
         If not provided then a random free port will be selected.
         """
-        super().__init__(['mb', '--port', '{port}'], port)
+        super().__init__(['mb', '--mock', '--port', '{port}'], port)
         self._imposters_url = 'http://localhost:{}/imposters'.format(self.port)
 
     def add_imposter(self, imposter_cfg):
