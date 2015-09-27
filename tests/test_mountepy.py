@@ -1,9 +1,11 @@
+import concurrent.futures
 import os.path
+import sys
+
 import port_for
 import port_for.api
 import pytest
 import requests
-import sys
 
 from mountepy import Mountebank, HttpService, ServiceGroup, HttpStub
 
@@ -47,7 +49,7 @@ def test_service_env_config():
     service = HttpService(
         [sys.executable, example_service_path],
         port=service_port,
-        env={'TEST_APP_PORT': str(service_port)})
+        env={'TEST_APP_PORT': '{port}'})
     with service:
         assert requests.get(TEST_SERVICE_URL_PATTERN.format(service_port)).text == 'Just some text.'
 
@@ -97,26 +99,29 @@ def test_mountebank_set_impostor_and_cleanup():
         mb.add_imposter(imposter_config)
 
 
-def test_mountebank_simple_impostor_add():
+def test_mountebank_simple_impostor():
     test_port = port_for.select_random()
     test_response = 'Just some reponse body (that I used to know)'
+    test_body = 'Some test message body'
 
     with Mountebank() as mb:
-        mb.add_imposter_simple(
+        imposter = mb.add_imposter_simple(
             port=test_port,
             method='POST',
             path='/some-path',
             status_code=201,
             response=test_response
         )
-        response = requests.post('http://localhost:{}/some-path'.format(test_port))
+
+        response = requests.post('http://localhost:{}/some-path'.format(test_port), data=test_body)
         assert response.status_code == 201
         assert response.text == test_response
+        assert imposter.wait_for_matches()[0].request.body == test_body
 
 
-def test_mountebank_simple_impostors_add():
+def test_mountebank_multiple_simple_impostors():
     test_port = port_for.select_random()
-    test_response_1 = 'Just some reponse body (that I used to know)'
+    test_response_1 = 'Just some response body (that I used to know)'
     test_response_2 = '{"Hey": "a JSON!"}'
     stub_1 = HttpStub(method='PUT', path='/path-1', status_code=201, response=test_response_1)
     stub_2 = HttpStub(method='POST', path='/path-2', status_code=202, response=test_response_2)
@@ -134,6 +139,13 @@ def test_mountebank_simple_impostors_add():
         response_2 = requests.post('http://localhost:{}/path-2'.format(test_port))
         assert response_2.status_code == 202
         assert response_2.text == test_response_2
+
+
+def test_mountebank_impostor_match_timeout():
+    with Mountebank() as mb:
+        imposter = mb.add_imposter_simple()
+        with pytest.raises(TimeoutError):
+            imposter.wait_for_matches(timeout=0.001)
 
 
 def test_mountebank_impostor_reset():

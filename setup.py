@@ -3,7 +3,7 @@
 import os.path
 from setuptools import setup
 
-version = '0.1.5'
+version = '0.1.6'
 
 # TODO extract this automatically without the specific versions
 requirements = [

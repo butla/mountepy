@@ -7,8 +7,9 @@ mountepy
 
 Utilities for creating (micro)service tests. Based on Mountebank.
 * Test-framework-agnostic (use unittest, nose, py.test or whatever... but I like py.test).
+* Enables fast and reliable end-to-end testing of microservices. They won't be aware that they are in some testing mode.
 * Tested on Python 3.4, Ubuntu 14 x64.
-* Planned features in the road map below (this is still under development).
+* Planned features in the road map below (*this is still under development*).
 
 ## Installation
 1. Install NodeJS and NPM. On Ubuntu it's `sudo apt-get install -y nodejs-legacy npm`
@@ -37,12 +38,14 @@ tox
 * Why create a new project? There already is a [Python Mountebank wrapper](https://github.com/aholyoke/mountebank-python), but it doesn't offer much.
 
 ## Road map
-1. Substitute port in env variables like in command parts.
-1. Fix all TODOs
+1. Differentiate between stubs when getting calls from an impostor.
+1. Fix all TODOs.
+1. Fill all imposter match fields.
 1. Provide examples.
+1. Fully document methods.
 1. Translate this README to rST.
 1. Add to PyPI.
-1. Add example of calling services through client generated with [Bravado](https://github.com/Yelp/bravado)
+1. Add example of calling services through client generated with [Bravado](https://github.com/Yelp/bravado).
 1. Remove MANIFEST.in like they did in PyScaffold.
 1. Requirements in setup.py should be extracted automatically from requirements.txt.
 1. Make Python 2.7 compatible... maybe.

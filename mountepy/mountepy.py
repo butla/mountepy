@@ -45,8 +45,8 @@ class HttpService:
         else:
             self.port = port
         self._process_command = self._format_process_command(process_command, self.port)
+        self._service_env = self._format_process_env(env, self.port)
         self._service_proc = None
-        self._service_env = env
 
     def start(self, timeout=5.0):
         """
@@ -85,9 +85,82 @@ class HttpService:
         else:
             return command
 
+    @staticmethod
+    def _format_process_env(env, port):
+        if not env:
+            return env
 
+        formatted_env = dict(env)
+        for key, value in env.items():
+            if '{port}' in value:
+                formatted_env[key] = value.format(port=port)
+        return formatted_env
+
+
+# TODO make a class out of it
 # A configuration for a simple Mountebank impostor, not including the port
 HttpStub = collections.namedtuple('HttpStub', ['method', 'path', 'status_code', 'response'])
+
+
+class Imposter:
+    def __init__(self, mountebank_port, port):
+        self._url = 'http://localhost:{}/imposters/{}'.format(mountebank_port, port)
+        self.port = port
+
+    def matches(self):
+        # TODO add a class for stubs, make them identifiable
+        stub_json = requests.get(self._url).json()['stubs'][0]
+        print('Print in code')
+        import pprint
+        pprint.pprint(stub_json)
+        matches = []
+        for match in stub_json.get('matches', []):
+            matches.append(ImposterMatch(request=match['request'], response=match['response']))
+        return matches
+
+    def wait_for_matches(self, count=1, timeout=5.0):
+        start_time = time.perf_counter()
+        while True:
+            matches = self.matches()
+            if len(matches) >= count:
+                return matches
+            else:
+                time.sleep(0.01)
+                if time.perf_counter() - start_time >= timeout:
+                    raise TimeoutError('Waited too long for requests on stub.')
+
+
+class ImposterMatch:
+    def __init__(self, request, response):
+        # TODO add timestamp field, use dateutil
+        # TODO add a class for response
+        self.request = ImposterRequest(
+            body=request['body'],
+            headers=request['headers'],
+            method=request['method'],
+            path=request['path'],
+            query=request['query'],
+            request_from=request['requestFrom'],
+        )
+        self.response = response
+
+
+class ImposterRequest:
+    def __init__(self, body, headers, method, path, query, request_from):
+        """
+        :param body: The body of a response. Can be any valid JSON (this includes raw values)
+        :param dict headers:
+        :param str method:
+        :param str path:
+        :param dict query:
+        :param str request_from:
+        """
+        self.body = body
+        self.headers = headers
+        self.method = method
+        self.path = path
+        self.query = query
+        self.request_from = request_from
 
 
 class Mountebank(HttpService):
@@ -109,22 +182,28 @@ class Mountebank(HttpService):
         """
         Adds a HTTP service stub (imposter) to Mountebank instance.
         :param dict imposter_cfg: Mountebank configuration for an impostor.
-        :rtype: None
+        :return: The created service stub.
+        :rtype: Imposter
         """
         resp = requests.post(self._imposters_url, json=imposter_cfg)
         resp.raise_for_status()
+        return Imposter(self.port, imposter_cfg['port'])
 
-    def add_imposter_simple(self, port, method, path, status_code, response):
+    def add_imposter_simple(self, port=None, method='GET', path='/', status_code=200, response=''):
         """
         Adds a HTTP service stub (imposter) to Mountebank instance.
         Takes a simplified configuration.
-        :param int port: port the imposter will listen on
-        :param str method: HTTP method that the imposter will wait for
-        :param str path: HTTP path the imposter will wait for
-        :param int status_code: HTTP status code the imposter will return
-        :param str response: body of the imposters response
-        :rtype: None
+        :param int port: port the imposter will listen on. If none, a random port will be selected.
+        :param str method: HTTP method that the imposter will wait for. GET by default.
+        :param str path: HTTP path the imposter will wait for. '/' by default.
+        :param int status_code: HTTP status code the imposter will return. 200 by default.
+        :param str response: body of the imposters response. Empty string by default.
+        :return: The created service stub.
+        :rtype: Imposter
         """
+        if port == None:
+            port = port_for.select_random()
+
         imposter_config = {
             'port': port,
             'protocol': 'http',
@@ -156,7 +235,7 @@ class Mountebank(HttpService):
                 }
             ]
         }
-        self.add_imposter(imposter_config)
+        return self.add_imposter(imposter_config)
 
     def add_imposters_simple(self, port, stubs):
         """
@@ -195,7 +274,7 @@ class Mountebank(HttpService):
                                     'method': stub.method,
                                     }
                             },
-                            ]
+                        ]
                     }
                 ]
             }
