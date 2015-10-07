@@ -67,7 +67,7 @@ class HttpService:
 
     def stop(self):
         atexit.unregister(self.stop)
-        self._service_proc.kill()
+        self._service_proc.terminate()
         # TODO add timeout and some error
         self._service_proc.wait()
 
@@ -108,6 +108,10 @@ class Imposter:
         self.port = port
 
     def requests(self):
+        """
+        :return: The requests made on the impostor.
+        :rtype: list[`ImposterRequest`]
+        """
         imposter_json = requests.get(self._url).json()
         imposter_requests = []
         for request in imposter_json.get('requests', []):
@@ -124,9 +128,9 @@ class Imposter:
     def wait_for_requests(self, count=1, timeout=5.0):
         start_time = time.perf_counter()
         while True:
-            matches = self.requests()
-            if len(matches) >= count:
-                return matches
+            received_requests = self.requests()
+            if len(received_requests) >= count:
+                return received_requests
             else:
                 time.sleep(0.01)
                 if time.perf_counter() - start_time >= timeout:

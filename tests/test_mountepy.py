@@ -2,7 +2,6 @@ import os.path
 import sys
 
 import port_for
-import port_for.api
 import pytest
 import requests
 

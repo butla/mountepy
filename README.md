@@ -38,14 +38,15 @@ tox
 * Why create a new project? There already is a [Python Mountebank wrapper](https://github.com/aholyoke/mountebank-python), but it doesn't offer much.
 
 ## Road map
-1. Fix all TODOs.
-1. Fill all imposter match fields.
 1. Provide examples.
+1. Fill all imposter match fields.
+1. Fix all TODOs.
+1. If Mountebank is not found, give a clear message about installing it.
 1. Fully document methods.
 1. Translate this README to rST.
 1. Add to PyPI.
 1. Add example of calling services through client generated with [Bravado](https://github.com/Yelp/bravado).
-1. Remove MANIFEST.in like they did in PyScaffold.
+1. Remove MANIFEST.in like it's done in PyScaffold.
 1. Requirements in setup.py should be extracted automatically from requirements.txt.
 1. Make Python 2.7 compatible... maybe.
 1. Check if cycling port_for.is_available() is as good as _wait_for_endpoint. If not, add that to port_for.
