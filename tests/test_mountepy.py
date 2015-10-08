@@ -1,5 +1,6 @@
 import os.path
 import sys
+import threading
 
 import port_for
 import pytest
@@ -173,14 +174,43 @@ def test_service_group_start():
         assert requests.get(test_service_2_url).status_code == 200
 
 
+class FakeHttpService:
+
+    """
+    Has start and stop methods like `mountepy.HttpService` but a different context manager logic.
+    """
+
+    def __init__(self, lock_start=False, lock_stop=False):
+        self._lock_start = lock_start
+        self._lock_stop = lock_stop
+        self._stalling_lock = threading.Lock()
+
+    def __enter__(self):
+        self._stalling_lock.acquire()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._stalling_lock.release()
+
+    def start(self):
+        if self._lock_start:
+            self._stalling_lock.acquire()
+
+    def stop(self):
+        if self._lock_stop:
+            self._stalling_lock.acquire()
+
+
 def test_service_group_start_timeout():
-    services = ServiceGroup(HttpService(TEST_SERVICE_COMMAND), HttpService(TEST_SERVICE_COMMAND))
-    with pytest.raises(TimeoutError):
-        services.start(timeout=0.001)
+    with FakeHttpService(lock_start=True) as service_1, FakeHttpService(lock_start=True) as service_2:
+        services = ServiceGroup(service_1, service_2)
+        with pytest.raises(TimeoutError):
+            services.start(timeout=0.00000001)
 
 
 def test_service_group_stop_timeout():
-    services = ServiceGroup(HttpService(TEST_SERVICE_COMMAND), HttpService(TEST_SERVICE_COMMAND))
-    services.start()
-    with pytest.raises(TimeoutError):
-        services.stop(timeout=0.00000001)
+    with FakeHttpService(lock_stop=True) as service_1, FakeHttpService(lock_stop=True) as service_2:
+        services = ServiceGroup(service_1, service_2)
+        services.start()
+        with pytest.raises(TimeoutError):
+            services.stop(timeout=0.00000001)
