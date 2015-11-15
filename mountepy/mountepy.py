@@ -39,11 +39,13 @@ class HttpService:
         :param dict env: Environment variables that will be visible for the service process.
         All values of this dictionary should be strings.
         E.g. {'EXAMPLE_VARIABLE_NAME': 'some_example_value'}
+        Values may contain '{port}' string - it will be filled with the provided port.
         """
         if port is None:
             self.port = port_for.select_random()
         else:
             self.port = port
+        self.base_url = 'http://localhost:{}'.format(self.port)
         self._process_command = self._format_process_command(process_command, self.port)
         self._service_env = self._format_process_env(env, self.port)
         self._service_proc = None
@@ -156,6 +158,7 @@ class ImposterRequest:
         self.request_from = request_from
 
 
+# TODO add imposter calling_url field (other url should be management_url)
 class Mountebank(HttpService):
 
     """
