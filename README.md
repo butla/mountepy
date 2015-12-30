@@ -31,10 +31,10 @@ tox
 ## Examples
 **TBD**
 
-## Motivation
+## Motivation (as of 2015-12-30)
 * Why [Mountebank](https://github.com/bbyars/mountebank)? It can be deployed as standalone application, is actively developed and supports TCP mocks which can be used to simulate broken HTTP messages.
-* Why not [Pretenders](https://github.com/pretenders/pretenders)? Doesn't support TCP, the development doesn't seem to be active.
-* Why not [WireMock](https://github.com/tomakehurst/wiremock)? I don't want to be forced to install Java to run tests and it doesn't seem to have more features than Mountebank.
+* Why not [Pretenders](https://github.com/pretenders/pretenders)? Doesn't support TCP and the development doesn't seem to be really active.
+* Why not [WireMock](https://github.com/tomakehurst/wiremock)? Doesn't support TCP and I don't want to be forced to install Java to run tests and it doesn't seem to have more features than Mountebank.
 * Why create a new project? There already is a [Python Mountebank wrapper](https://github.com/aholyoke/mountebank-python), but it doesn't offer much.
 
 ## Road map

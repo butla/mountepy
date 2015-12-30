@@ -99,12 +99,12 @@ class HttpService:
         return formatted_env
 
 
-# TODO make a class out of it
-# A configuration for a simple Mountebank impostor, not including the port
-HttpStub = collections.namedtuple('HttpStub', ['method', 'path', 'status_code', 'response'])
-
-
 class Imposter:
+
+    """
+    Represents a Mountebank imposter.
+    """
+
     def __init__(self, mountebank_port, port):
         self._url = 'http://localhost:{}/imposters/{}'.format(mountebank_port, port)
         self.port = port
@@ -138,8 +138,20 @@ class Imposter:
                 if time.perf_counter() - start_time >= timeout:
                     raise TimeoutError('Waited too long for requests on stub.')
 
+    def destroy(self):
+        """
+        Deletes this `Imposter` from Mountebank.
+        This object cannot be used afterwards.
+        """
+        requests.delete(self._url)
+
 
 class ImposterRequest:
+
+    """
+    A request made on a Mountebank imposter. Returned by 'Imposter` object.
+    """
+
     def __init__(self, body, headers, method, path, query, request_from):
         """
         :param body: The body of a response. Can be any valid JSON (this includes raw values)
@@ -156,6 +168,11 @@ class ImposterRequest:
         self.path = path
         self.query = query
         self.request_from = request_from
+
+
+# TODO make a class out of it
+# A configuration for a simple Mountebank impostor, not including the port
+HttpStub = collections.namedtuple('HttpStub', ['method', 'path', 'status_code', 'response'])
 
 
 # TODO add imposter calling_url field (other url should be management_url)

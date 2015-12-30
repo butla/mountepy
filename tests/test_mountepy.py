@@ -143,14 +143,22 @@ def test_mountebank_multiple_simple_impostors():
         assert response_2.text == test_response_2
 
 
-def test_mountebank_impostor_match_timeout():
+def test_impostor_destroy():
+    with Mountebank() as mb:
+        imposter = mb.add_imposter_simple()
+        imposter.destroy()
+        with pytest.raises(requests.exceptions.ConnectionError):
+            requests.get('http://localhost:{}'.format(imposter.port))
+
+
+def test_impostor_get_matches_timeout():
     with Mountebank() as mb:
         imposter = mb.add_imposter_simple()
         with pytest.raises(TimeoutError):
             imposter.wait_for_requests(timeout=0.001)
 
 
-def test_mountebank_impostor_reset():
+def test_mountebank_reset():
     test_port = port_for.select_random()
     with Mountebank() as mb:
         imposters_url = 'http://localhost:{}/imposters'.format(mb.port)
