@@ -39,9 +39,9 @@ tox
 
 ## Road map
 1. Provide examples.
+1. Make it work with standalone Mountebank that will be downloaded when needed.
 1. Fill all imposter match fields.
 1. Fix all TODOs.
-1. If Mountebank is not found, give a clear message about installing it.
 1. Fully document methods.
 1. Translate this README to rST.
 1. Add to PyPI.
