@@ -1,5 +1,6 @@
 import pkg_resources
 
-from mountepy.mountepy import Mountebank, HttpService, ServiceGroup, HttpStub, wait_for_port
+from mountepy.http_service import HttpService, ServiceGroup, wait_for_port
+from mountepy.mountebank import Mountebank, HttpService, HttpStub
 
 __version__ = pkg_resources.get_distribution(__name__).version

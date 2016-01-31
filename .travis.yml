@@ -2,7 +2,6 @@ language: python
 python:
   - 3.4
 install:
-  - npm install -g mountebank
   - pip install tox
   - pip install coveralls
 script:
