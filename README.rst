@@ -34,17 +34,10 @@ Installation
 
 .. code-block:: bash
 
-    $ pip install git+git://github.com/butla/mountepy.git
+    $ pip install mountepy
 
 A standalone distribution of Mountebank (including NodeJS) will be
-downloaded on installing the package.
-
-If you want to lock on a specific version in requirements.txt then add
-to it a line pointing to a specific commit, e.g.:
-
-.. code-block:: bash
-
-    $ git+git://github.com/butla/mountepy.git@456f22c
+downloaded on first run.
 
 If you don't want Mountepy to download Mountebank:
 
@@ -140,7 +133,7 @@ Install and run tox
 Motivation (on 2015-12-30)
 --------------------------
 
-- Why `Mountebank <https://github.com/bbyars/mountebank>`_? It can be
+- Why `Mountebank <https://github.com/bbyars/mountebank>`__? It can be
   deployed as standalone application, is actively developed and
   supports TCP mocks which can be used to simulate broken HTTP
   messages.
