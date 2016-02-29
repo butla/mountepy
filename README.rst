@@ -15,9 +15,9 @@ Utilities for creating (micro)service tests. Based on `Mountebank <http://www.mb
 - Enables fast and reliable end-to-end testing of microservices. They
   won't be aware that they are in some testing mode.
 - Tested on Python 3.4, Ubuntu 14 x64.
-- Planned features in the road map below (*this is still under
-  development*).
-  If you have suggestions just post them as Github issues.
+- Planned features in the road map below.
+  If you have suggestions, just post them as Github issues.
+  Pull requests are also welcome :)
 
 Mountepy actually works by managing HTTP service processes, including
 that of Mountebank. Thanks to that you no longer need that "start X
@@ -152,11 +152,9 @@ Road map
 
 #. Add Pylint.
 #. Switch license to Creative Commons Zero.
-#. Add to PyPI.
 #. Fill all imposter match fields.
 #. Fix all TODOs.
 #. Fully document methods.
-#. Translate this README to rST.
 #. Add example of calling services through client generated with
    `Bravado <https://github.com/Yelp/bravado>`_.
 #. Remove MANIFEST.in like it's done in PyScaffold.
