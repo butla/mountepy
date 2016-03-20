@@ -8,7 +8,14 @@ mountepy
 .. image:: https://requires.io/github/butla/mountepy/requirements.svg?branch=master
     :target: https://requires.io/github/butla/mountepy/requirements/?branch=master
 
-Utilities for creating (micro)service tests. Based on `Mountebank <http://www.mbtest.org/>`_.
+Utilities for creating (micro)service tests.
+Based on `Mountebank <http://www.mbtest.org/>`_.
+
+Mountepy works by spawning and cleaning after given HTTP service
+processes and Mountebank. Thanks to that you no longer need that "start X
+before running the tests" for your application. No. Your tests start
+"X", it's put up or down only when it needs to and as many times as you
+need.
 
 - Test-framework-agnostic (use unittest, nose, py.test or whatever...
   but I like py.test).
@@ -18,12 +25,6 @@ Utilities for creating (micro)service tests. Based on `Mountebank <http://www.mb
 - Planned features in the road map below.
   If you have suggestions, just post them as Github issues.
   Pull requests are also welcome :)
-
-Mountepy actually works by managing HTTP service processes, including
-that of Mountebank. Thanks to that you no longer need that "start X
-before running the tests" for your application. No. Your tests start
-"X", it's put up or down only when it needs to and as many times as you
-need.
 
 I recommend Pytest for elastic composition of service process test
 fixtures. Your process may start once per test suite, once per test,
@@ -94,7 +95,7 @@ during object costruction or automatically selected from free ports.
             'RET_STR': 'Just some text.'
         })
     with service:
-        assert requests.get(service.base_url).text == 'Just some text.'
+        assert requests.get(service.url).text == 'Just some text.'
 
 Starting a more complex service running on `Gunicorn <http://gunicorn.org/>`_
 can look like this:
@@ -150,11 +151,7 @@ Motivation (on 2015-12-30)
 Road map
 --------
 
-#. Add Pylint.
 #. Switch license to Creative Commons Zero.
-#. Fill all imposter match fields.
-#. Fix all TODOs.
-#. Fully document methods.
 #. Add example of calling services through client generated with
    `Bravado <https://github.com/Yelp/bravado>`_.
 #. Remove MANIFEST.in like it's done in PyScaffold.

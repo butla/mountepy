@@ -13,13 +13,15 @@ import port_for
 
 
 def wait_for_port(port, host='localhost', timeout=5.0):
-    """
-    Wait until a port starts accepting TCP connections.
-    :param int port: Number of the port.
-    :param str host: Host address on which the port should exist.
-    :param float timeout: In seconds. How long to wait before raising errors.
-    :rtype: None
-    :raises TimeoutError: The port isn't accepting connection after time specified in `timeout`.
+    """Wait until a port starts accepting TCP connections.
+
+    Args:
+        port (int): Port number.
+        host (str): Host address on which the port should exist.
+        timeout (float): In seconds. How long to wait before raising errors.
+
+    Raises:
+        TimeoutError: The port isn't accepting connection after time specified in `timeout`.
     """
     start_time = time.perf_counter()
     while True:
@@ -33,39 +35,42 @@ def wait_for_port(port, host='localhost', timeout=5.0):
 
 
 class HttpService:
+    """Manages a HTTP service instance on localhost. Can start and stop the process.
 
-    """
-    Manages a HTTP service instance on localhost. Can start and stop the process.
+    Args:
+        process_command: Command that will start the service.
+            It is a string or a list of strings (like parameters to subprocess.Popen).
+            Command strings may contain '{port}' - it will be filled with the provided port.
+        port (int): Port on which the service will listen.
+            If not provided then the service will run on a random free port.
+        env (dict): Environment variables that will be visible for the service process.
+            All values of this dictionary must be strings.
+            E.g. {'EXAMPLE_VARIABLE_NAME': 'some_example_value'}
+            Values may contain '{port}' string - it will be filled with the provided port.
+
+    Attributes:
+        port (int): Localhost port taken by the service.
+        url (int): Address on which the service is available on when it's started.
     """
 
     def __init__(self, process_command, port=None, env=None):
-        """
-        Initializes the object without starting the service process.
-        :param process_command: Command that will start the service.
-        It is a string or a list of strings (like parameters to subprocess.Popen).
-        Command strings may contain '{port}' - it will be filled with the provided port.
-        :param int port: Port on which the service will listen.
-        If not provided then the service will run on a random free port.
-        :param dict env: Environment variables that will be visible for the service process.
-        All values of this dictionary should be strings.
-        E.g. {'EXAMPLE_VARIABLE_NAME': 'some_example_value'}
-        Values may contain '{port}' string - it will be filled with the provided port.
-        """
         if port is None:
             self.port = port_for.select_random()
         else:
             self.port = port
-        self.base_url = 'http://localhost:{}'.format(self.port)
+        self.url = 'http://localhost:{}'.format(self.port)
         self._process_command = self._format_process_command(process_command, self.port)
         self._service_env = self._format_process_env(env, self.port)
         self._service_proc = None
 
     def start(self, timeout=5.0):
-        """
-        Starts service process and waits for it to start accepting connections.
-        :param float timeout: How long to wait before raising an error.
-        :rtype: None
-        :raises TimeoutError: If the service process didn't start in time.
+        """Starts service process and waits for it to start accepting connections.
+
+        Args:
+            timeout (float): How long to wait (in seconds) before raising an error.
+
+        Raises:
+            TimeoutError: If the service process didn't start in time.
         """
         self._service_proc = subprocess.Popen(self._process_command, env=self._service_env)
         atexit.register(self.stop)
@@ -78,6 +83,7 @@ class HttpService:
             raise
 
     def stop(self):
+        """Closes the service process and wait's for it to close."""
         atexit.unregister(self.stop)
         self._service_proc.terminate()
         # TODO add timeout and some error
@@ -92,7 +98,7 @@ class HttpService:
 
     @staticmethod
     def _format_process_command(command, port):
-        if type(command) != str:
+        if not isinstance(command, str):
             return [part.format(port=port) if ('{port}' in part) else part for part in command]
         else:
             return command
@@ -110,27 +116,25 @@ class HttpService:
 
 
 class ServiceGroup:
-
-    """
-    Manages a group of service processes.
+    """Manages a group of service processes.
     Can be used to concurrently start or stop more than one service.
+
+    Args:
+        *service_processes (list[`HttpService`]): A list of not yet started HTTP services.
     """
 
     def __init__(self, *service_processes):
-        """
-        :param service_processes: A list of HttpService objects.
-        Don't start or stop them individually after passing them here.
-        :raises TimeoutError:
-        """
         self._services = service_processes
         self._executor = concurrent.futures.ThreadPoolExecutor(max_workers=7)
 
     def start(self, timeout=5.0):
-        """
-        Starts all the service processes and waits them to start accepting connections.
-        :param float timeout: How long to wait before raising an error.
-        :rtype: None
-        :raises TimeoutError: If all of the services didn't start in time.
+        """Starts all the service processes and waits them to start accepting connections.
+
+        Args:
+            timeout (float): How long (in seconds) to wait before raising an error.
+
+        Raises:
+            TimeoutError: If all of the services didn't start in time.
         """
         start_futures = [self._executor.submit(service.start) for service in self._services]
         results = concurrent.futures.wait(start_futures, timeout=timeout)
@@ -140,9 +144,11 @@ class ServiceGroup:
     def stop(self, timeout=5.0):
         """
         Stops all the service processes. Waits for full stop.
-        :param float timeout: How long to wait before raising an error.
-        :rtype: None
-        :raises TimeoutError: If all of the services didn't stop in time.
+        Args:
+            timeout (float): How long (in seconds) to wait before raising an error.
+
+        Raises:
+            TimeoutError: If all of the services didn't stop in time.
         """
         stop_futures = [self._executor.submit(service.stop) for service in self._services]
         results = concurrent.futures.wait(stop_futures, timeout=timeout)

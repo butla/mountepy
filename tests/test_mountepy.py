@@ -78,7 +78,7 @@ def test_mountebank_multiple_simple_impostors():
     stub_2 = HttpStub(method='POST', path='/path-2', status_code=202, response=test_response_2)
 
     with Mountebank() as mb:
-        mb.add_imposters_simple(
+        mb.add_multi_stub_imposter_simple(
             port=test_port,
             stubs=[stub_1, stub_2]
         )

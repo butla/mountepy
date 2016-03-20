@@ -14,17 +14,17 @@ TEST_SERVICE_COMMAND = [sys.executable, '-m', 'http.server', '{port}']
 
 def test_service_base_url():
     service = HttpService('fake-command', 12345)
-    assert service.base_url == 'http://localhost:12345'
+    assert service.url == 'http://localhost:12345'
 
 
 def test_service_start_and_cleanup():
     service_port = port_for.select_random()
 
     with HttpService(TEST_SERVICE_COMMAND, service_port) as service:
-        assert requests.get(service.base_url).status_code == 200
+        assert requests.get(service.url).status_code == 200
 
     with pytest.raises(requests.exceptions.ConnectionError):
-        requests.get(service.base_url)
+        requests.get(service.url)
 
 
 def test_service_single_string_command():
@@ -52,15 +52,15 @@ def test_service_env_config():
         port=service_port,
         env={'TEST_APP_PORT': '{port}'})
     with service:
-        assert requests.get(service.base_url).text == 'Just some text.'
+        assert requests.get(service.url).text == 'Just some text.'
 
 def test_service_group_start():
     test_service_1 = HttpService(TEST_SERVICE_COMMAND)
     test_service_2 = HttpService(TEST_SERVICE_COMMAND)
 
     with ServiceGroup(test_service_1, test_service_2):
-        assert requests.get(test_service_1.base_url).status_code == 200
-        assert requests.get(test_service_2.base_url).status_code == 200
+        assert requests.get(test_service_1.url).status_code == 200
+        assert requests.get(test_service_2.url).status_code == 200
 
 
 class FakeHttpService:

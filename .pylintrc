@@ -1,0 +1,22 @@
+[MESSAGES CONTROL]
+
+# Disable the message, report, category or checker with the given id(s). You
+# can either give multiple identifiers separated by comma (,) or put this
+# option multiple times (only on the command line, not in the configuration
+# file where it should appear only once).You can also use "--disable=all" to
+# disable everything first and then reenable specific checks. For example, if
+# you want to run only the similarities checker, you can use "--disable=all
+# --enable=similarities". If you want to run only the classes checker, but have
+# no Warning level messages displayed, use"--disable=all --enable=classes
+# --disable=W"
+disable=W1620,E1607,I0021,E1601,W1618,W1613,W1607,E1604,W1611,W1632,W1628,W1637,W1625,W1609,W1638,W1621,W1640,W1635,E1605,W1623,W0704,W1619,W1622,W1614,W1604,W1606,E1606,W1636,W1629,I0020,W1610,W1603,W1601,W1624,W1602,E1602,W1633,W1634,W1630,E1603,E1608,W1605,W1617,W1639,W1615,W1612,W1626,W1627,W1616,W1608,too-few-public-methods,fixme,locally-disabled
+
+[REPORTS]
+
+# Put messages in a separate file for each module / package specified on the
+# command line instead of printing them on stdout. Reports (if any) will be
+# written in a file name "pylint_global.[txt|html]".
+#files-output=yes
+
+# Tells whether to display a full report or only the messages
+reports=no
