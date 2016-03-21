@@ -28,10 +28,11 @@ def wait_for_port(port, host='localhost', timeout=5.0):
         try:
             with socket.create_connection((host, port)):
                 break
-        except ConnectionRefusedError:
+        except OSError:
             time.sleep(0.01)
             if time.perf_counter() - start_time >= timeout:
-                raise TimeoutError('Waited too long for the port to start accepting connections.')
+                raise TimeoutError('Waited too long for the port {} on host {} to start accepting '
+                                   'connections.'.format(port, host))
 
 
 class HttpService:
