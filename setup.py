@@ -29,7 +29,7 @@ setup(
     keywords='test http mountebank microservice',
     classifiers=[
         'Programming Language :: Python :: 3.4',
-        'Operating System :: POSIX',
+        'Operating System :: POSIX :: Linux',
         'Development Status :: 3 - Alpha',
         'License :: Freely Distributable',
         'Intended Audience :: Developers',
