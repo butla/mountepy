@@ -79,7 +79,7 @@ it sees in ``RET_STR`` environment variable.
 Also, the app needs to know on what port to run, so we also pass it
 as an environment variable. ``{port}`` is a special value for Mountepy.
 It will be filled with the application's port, whether it's passed
-during object costruction or automatically selected from free ports.
+during object construction or automatically selected from free ports.
 
 .. code-block:: python
 
@@ -163,3 +163,10 @@ Notes
 
 - `Bottle <https://github.com/bottlepy/bottle>`_ is used to test HTTP
   services' handler.
+
+License
+-------
+Mountepy is licensed under `BSD Zero Clause license <https://spdx.org/licenses/0BSD.html>`_.
+
+Why I didn't use one of the more popular licenses like MIT, 2 or 3-Clause BSD or Apache2? Well, this one is practically equal to 2-Clause BSD (and I don't see any functional differences between it and MIT license) with the exception of the rule about retaining the original license text in derivative work. So if you'd happen to redistribute my library along with your software you don't have to attach a copy of my license. So you won't break any copyright laws by being lazy (which I like to be, for instance). You're welcome.
+
