@@ -151,7 +151,6 @@ Motivation (on 2015-12-30)
 Road map
 --------
 
-#. Switch license to Creative Commons Zero.
 #. Add example of calling services through client generated with
    `Bravado <https://github.com/Yelp/bravado>`_.
 #. Remove MANIFEST.in like it's done in PyScaffold.
