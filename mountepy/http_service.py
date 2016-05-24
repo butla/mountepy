@@ -5,6 +5,7 @@ Abstractions for management of HTTP service processes.
 import atexit
 import concurrent.futures
 import logging
+import os
 import signal
 import socket
 import subprocess
@@ -49,20 +50,23 @@ class HttpService:
             All values of this dictionary must be strings.
             E.g. {'EXAMPLE_VARIABLE_NAME': 'some_example_value'}
             Values may contain '{port}' string - it will be filled with the provided port.
+        copy_parent_env (bool): If set to True then environment of the service process will
+            contain environment of the parent process updated with `env`.
+            If set to False, then only `env` will be set as the service's environment.
 
     Attributes:
         port (int): Localhost port taken by the service.
         url (int): Address on which the service is available on when it's started.
     """
 
-    def __init__(self, process_command, port=None, env=None):
+    def __init__(self, process_command, port=None, env=None, copy_parent_env=True):
         if port is None:
             self.port = port_for.select_random()
         else:
             self.port = port
         self.url = 'http://localhost:{}'.format(self.port)
         self._process_command = self._format_process_command(process_command, self.port)
-        self._service_env = self._format_process_env(env, self.port)
+        self._service_env = self._format_process_env(copy_parent_env, env, self.port)
         self._service_proc = None
 
     def start(self, timeout=5.0):
@@ -110,15 +114,20 @@ class HttpService:
             return command
 
     @staticmethod
-    def _format_process_env(env, port):
-        if not env:
-            return env
+    def _format_process_env(copy_parent_env, env, port):
+        env = env or {}
 
-        formatted_env = dict(env)
+        formatted_env = env.copy()
         for key, value in env.items():
             if '{port}' in value:
                 formatted_env[key] = value.format(port=port)
-        return formatted_env
+
+        if copy_parent_env:
+            final_env = os.environ.copy()
+            final_env.update(formatted_env)
+            return final_env
+        else:
+            return formatted_env
 
 
 class ServiceGroup:

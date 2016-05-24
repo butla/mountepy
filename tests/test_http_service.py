@@ -54,6 +54,23 @@ def test_service_env_config():
     with service:
         assert requests.get(service.url).text == 'Just some text.'
 
+
+@pytest.mark.parametrize('service_env, parent_env, final_env', [
+    ({'bla': 'aaa'}, {'something': '123', 'bla': 'bbb'}, {'something': '123', 'bla': 'aaa'}),
+    (None, {'asd': 'qwe'}, {'asd': 'qwe'}),
+])
+def test_service_env_from_parent(service_env, parent_env, final_env):
+    os.environ = parent_env
+    service = HttpService('some fake command', env=service_env)
+    assert service._service_env == final_env
+
+
+def test_service_env_without_parent():
+    service_env = {'bla': 'aaa'}
+    service = HttpService('some fake command', env=service_env, copy_parent_env=False)
+    assert service._service_env == service_env
+
+
 def test_service_group_start():
     test_service_1 = HttpService(TEST_SERVICE_COMMAND)
     test_service_2 = HttpService(TEST_SERVICE_COMMAND)
