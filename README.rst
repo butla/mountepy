@@ -148,15 +148,6 @@ Motivation (on 2015-12-30)
   wrapper <https://github.com/aholyoke/mountebank-python>`_, but it
   doesn't offer much.
 
-Road map
---------
-
-#. Add example of calling services through client generated with
-   `Bravado <https://github.com/Yelp/bravado>`_.
-#. Remove MANIFEST.in like it's done in PyScaffold.
-#. Check if cycling port\_for.is\_available() is as good as
-   wait\_for\_port. If not, add that to port\_for.
-
 Notes
 -----
 
