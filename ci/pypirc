@@ -1,0 +1,13 @@
+[distutils]
+index-servers=
+    pypi
+    pypitest
+
+[pypitest]
+repository = https://testpypi.python.org/pypi
+username = butla 
+
+[pypi]
+repository = https://pypi.python.org/pypi
+username = butla
+
