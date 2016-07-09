@@ -108,11 +108,9 @@ class Mountebank(HttpService):
         return self.add_imposter(imposter_config)
 
     def reset(self):
-        """Removes configured imposters (HTTP stubs).
-        """
-        # TODO add validation
-        requests.delete(self._imposters_url)
-
+        """Removes configured imposters (HTTP stubs)."""
+        resp = requests.delete(self._imposters_url)
+        resp.raise_for_status()
 
 class Imposter:
     """A Mountebank imposter. It can contain stubs of HTTP, HTTPS, TCP or SMTP services.
