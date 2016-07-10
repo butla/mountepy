@@ -1,4 +1,5 @@
 import os.path
+import subprocess
 import sys
 import threading
 
@@ -33,7 +34,7 @@ def test_service_single_string_command():
     assert service._process_command == single_string_command
 
 
-def test_service_timeout_and_cleanup():
+def test_service_start_timeout_and_cleanup():
     test_service = HttpService(TEST_SERVICE_COMMAND)
 
     with pytest.raises(TimeoutError):
@@ -42,17 +43,30 @@ def test_service_timeout_and_cleanup():
 
 
 def test_service_env_config():
-    example_service_path = os.path.join(
-        os.path.dirname(os.path.realpath(__file__)),
-        'example_service.py')
-    service_port = port_for.select_random()
-
+    example_service_path = os.path.join(os.path.dirname(__file__), 'example_service.py')
     service = HttpService(
         [sys.executable, example_service_path],
-        port=service_port,
+        port=port_for.select_random(),
         env={'TEST_APP_PORT': '{port}'})
+
     with service:
         assert requests.get(service.url).text == 'Just some text.'
+
+
+def test_timeout_error_on_too_long_service_stop():
+    unstoppable_service_path = os.path.join(os.path.dirname(__file__), 'unstoppable_service.py')
+    service = HttpService(
+        [sys.executable, unstoppable_service_path],
+        port=port_for.select_random(),
+        env={'TEST_APP_PORT': '{port}'})
+
+    service.start()
+    try:
+        with pytest.raises(subprocess.TimeoutExpired):
+            service.stop(0.001)
+    finally:
+        # cleanup by ending the service process
+        service._service_proc.terminate()
 
 
 @pytest.mark.parametrize('service_env, parent_env, final_env', [

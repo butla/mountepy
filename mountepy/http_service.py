@@ -88,16 +88,22 @@ class HttpService:
             self.stop()
             raise
 
-    def stop(self):
-        """Closes the service process and wait's for it to close."""
+    def stop(self, timeout=5.0):
+        """Signals the service process to close and waits for it.
+
+        Args:
+            timeout (float): How long to wait (in seconds) before raising an error.
+
+        Raises:
+            `subprocess.TimeoutExpired`: If the service process didn't start in time.
+        """
         atexit.unregister(self.stop)
         # Sending SIGINT (ctrl+C) because Python handles it by default.
         # Terminate could also be sent, but if the service process spawned
         # another process, then it would need to intercept SIGTERM if we'd
         # want to have a multiprocess coverage report.
         self._service_proc.send_signal(signal.SIGINT)
-        # TODO add timeout and some error
-        self._service_proc.wait()
+        self._service_proc.wait(timeout)
 
     def __enter__(self):
         self.start()
