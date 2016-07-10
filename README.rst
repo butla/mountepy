@@ -1,8 +1,6 @@
 mountepy
 ========
 
-.. image:: https://travis-ci.org/butla/mountepy.svg?branch=master
-    :target: https://travis-ci.org/butla/mountepy
 .. image:: https://snap-ci.com/butla/mountepy/branch/master/build_image
     :target: https://snap-ci.com/butla/mountepy/branch/master
 .. image:: https://coveralls.io/repos/butla/mountepy/badge.svg?branch=master&service=github
