@@ -9,8 +9,8 @@ import requests
 
 from mountepy import HttpService, ServiceGroup
 
-# starting Python 3 (current Python) HTTP server on a port, that will be set by HttpService
-TEST_SERVICE_COMMAND = [sys.executable, '-m', 'http.server', '{port}']
+EXAMPLE_SERVICE_PATH = os.path.join(os.path.dirname(__file__), 'example_service.py')
+SERVICE_COMMAND = [sys.executable, EXAMPLE_SERVICE_PATH, '{port}']
 
 
 def test_service_base_url():
@@ -21,7 +21,7 @@ def test_service_base_url():
 def test_service_start_and_cleanup():
     service_port = port_for.select_random()
 
-    with HttpService(TEST_SERVICE_COMMAND, service_port) as service:
+    with HttpService(SERVICE_COMMAND, service_port) as service:
         assert requests.get(service.url).status_code == 200
 
     with pytest.raises(requests.exceptions.ConnectionError):
@@ -35,30 +35,22 @@ def test_service_single_string_command():
 
 
 def test_service_start_timeout_and_cleanup():
-    test_service = HttpService(TEST_SERVICE_COMMAND)
-
+    test_service = HttpService(SERVICE_COMMAND)
     with pytest.raises(TimeoutError):
         test_service.start(timeout=0.001)
     test_service._service_proc.wait(timeout=3.0)
 
 
-def test_service_env_config():
-    example_service_path = os.path.join(os.path.dirname(__file__), 'example_service.py')
-    service = HttpService(
-        [sys.executable, example_service_path],
-        port=port_for.select_random(),
-        env={'TEST_APP_PORT': '{port}'})
-
+def test_service_configuration_through_env_vars():
+    service = HttpService(SERVICE_COMMAND[:-1],
+                          env={'TEST_APP_PORT': '{port}'})
     with service:
         assert requests.get(service.url).text == 'Just some text.'
 
 
 def test_timeout_error_on_too_long_service_stop():
     unstoppable_service_path = os.path.join(os.path.dirname(__file__), 'unstoppable_service.py')
-    service = HttpService(
-        [sys.executable, unstoppable_service_path],
-        port=port_for.select_random(),
-        env={'TEST_APP_PORT': '{port}'})
+    service = HttpService([sys.executable, unstoppable_service_path, '{port}'])
 
     service.start()
     try:
@@ -86,8 +78,8 @@ def test_service_env_without_parent():
 
 
 def test_service_group_start():
-    test_service_1 = HttpService(TEST_SERVICE_COMMAND)
-    test_service_2 = HttpService(TEST_SERVICE_COMMAND)
+    test_service_1 = HttpService(SERVICE_COMMAND)
+    test_service_2 = HttpService(SERVICE_COMMAND)
 
     with ServiceGroup(test_service_1, test_service_2):
         assert requests.get(test_service_1.url).status_code == 200
