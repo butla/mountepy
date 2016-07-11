@@ -8,8 +8,7 @@ mountepy
 .. image:: https://requires.io/github/butla/mountepy/requirements.svg?branch=master
     :target: https://requires.io/github/butla/mountepy/requirements/?branch=master
 
-Utilities for creating (micro)service tests.
-Based on `Mountebank <http://www.mbtest.org/>`_.
+Utilities for creating (micro)service tests. Based on `Mountebank <http://www.mbtest.org/>`_.
 
 Mountepy works by spawning and cleaning after given HTTP service
 processes and Mountebank. Thanks to that you no longer need that "start X
@@ -120,6 +119,24 @@ can look like this:
     
     # now you test stuff...
     service.stop()
+    
+"Real world" use of ``mountepy`` can be found in `PyDAS <https://github.com/butla/pydas>`_.
+
+Measuring test coverage
+-----------------------
+
+Mountepy starts your code in a separate process, so it's normally hard to get
+information about the code covered by the tests.
+Fortunately, this problem is solved by `Coverage <https://pypi.python.org/pypi/coverage>`_.
+See `this documentation page <http://coverage.readthedocs.io/en/coverage-4.0.3/subprocess.html>`_.
+
+In short, you need to:
+
+- run ``coverage.process_startup()`` in each new Python process 
+  (this can be enforced by installing ``coverage_pth``, but some caution is required)
+- set ``COVERAGE_PROCESS_START`` environment variable to location of your ``.coveragerc``
+
+Again, see `PyDAS <https://github.com/butla/pydas>`_ for demonstration.
 
 Running tests
 -------------
