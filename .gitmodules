@@ -1,0 +1,3 @@
+[submodule "ci-helpers"]
+	path = ci-helpers
+	url = https://github.com/butla/ci-helpers.git

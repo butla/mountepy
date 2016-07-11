@@ -121,14 +121,16 @@ can look like this:
     # now you test stuff...
     service.stop()
 
-Testing
--------
+Running tests
+-------------
 
-Install and run tox
+Clone the repo with submodules, then install and run tox.
 
 .. code-block:: bash
 
-    $ pip install tox
+    $ git clone --recursive git@github.com:butla/mountepy.git
+    $ sudo pip install tox
+    $ cd mountepy
     $ tox
 
 Motivation (on 2015-12-30)
