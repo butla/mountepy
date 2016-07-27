@@ -135,8 +135,9 @@ In short, you need to:
 - run ``coverage.process_startup()`` in each new Python process 
   (this can be enforced by installing ``coverage_pth``, but some caution is required)
 - set ``COVERAGE_PROCESS_START`` environment variable to location of your ``.coveragerc``
+- run the tests themselves: ``coverage run (...)``, ``coverage combine`` and then ``coverage report -m``
 
-Again, see `PyDAS <https://github.com/butla/pydas>`_ for demonstration.
+Again, see `PyDAS's tox.ini <https://github.com/butla/PyDAS/blob/master/tox.ini>`_ for demonstration.
 
 Running tests
 -------------
