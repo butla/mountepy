@@ -168,12 +168,6 @@ Motivation (on 2015-12-30)
   wrapper <https://github.com/aholyoke/mountebank-python>`_, but it
   doesn't offer much.
 
-Notes
------
-
-- `Bottle <https://github.com/bottlepy/bottle>`_ is used to test HTTP
-  services' handler.
-
 License
 -------
 Mountepy is licensed under `BSD Zero Clause license <https://spdx.org/licenses/0BSD.html>`_.
