@@ -1,8 +1,12 @@
+import subprocess
+
 import port_for
 import pytest
 import requests
 
-from mountepy import Mountebank, HttpStub
+from mountepy import Mountebank, ExistingMountebank, HttpStub
+from mountepy.mountebank import MountebankWrapper
+from mountepy.mb_mgmt import get_mb_command
 
 
 def test_mountebank_set_impostor_and_cleanup():
@@ -121,3 +125,35 @@ def test_mountebank_reset():
         assert requests.get(imposters_url).json()['imposters'] != []
         mb.reset()
         assert requests.get(imposters_url).json()['imposters'] == []
+
+
+def test_mountebank_wrapper_unimplemented_methods():
+    mb = MountebankWrapper('host', 1234)
+    with pytest.raises(NotImplementedError):
+        mb.start()
+    with pytest.raises(NotImplementedError):
+        mb.stop()
+
+
+def test_existing_mountebank_simple_imposter():
+    mb_port = port_for.select_random()
+    test_port = port_for.select_random()
+    test_response = 'Just some reponse body (that I used to know)'
+    test_body = 'Some test message body'
+
+    mb_process = subprocess.Popen(get_mb_command() + ['--mock', '--port', str(mb_port)])
+    with ExistingMountebank('localhost', mb_port) as mb:
+        imposter = mb.add_imposter_simple(
+            port=test_port,
+            method='POST',
+            path='/some-path',
+            status_code=201,
+            response=test_response
+        )
+
+        response = requests.post('http://localhost:{}/some-path'.format(test_port), data=test_body)
+        assert response.status_code == 201
+        assert response.text == test_response
+        assert imposter.wait_for_requests()[0].body == test_body
+
+    mb_process.terminate()

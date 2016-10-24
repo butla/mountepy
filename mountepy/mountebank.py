@@ -9,21 +9,18 @@ import dateutil.parser
 import port_for
 import requests
 
-from .http_service import HttpService
+from .http_service import HttpService, wait_for_port
 from .mb_mgmt import get_mb_command
 
 
-class Mountebank(HttpService):
-    """Manages Mountebank instance on localhost. Can start and stop the process.
-
-    Args:
-        port (int): Port on which Mountebank will listen for impostor configuration commands.
-            If not provided then a random free port will be selected.
+class MountebankWrapper:
+    """A wrapper around the Mountebank API. Meant to be used as a superclass.
     """
 
-    def __init__(self, port=None):
-        super().__init__(get_mb_command() + ['--mock', '--port', '{port}'], port)
-        self._imposters_url = 'http://localhost:{}/imposters'.format(self.port)
+    def __init__(self, host, port):
+        self.host = host
+        self.port = port
+        self._imposters_url = 'http://{}:{}/imposters'.format(host, port)
 
     def add_imposter(self, imposter_cfg):
         """Adds a HTTP service stub (imposter) to Mountebank instance.
@@ -37,7 +34,7 @@ class Mountebank(HttpService):
         """
         resp = requests.post(self._imposters_url, json=imposter_cfg)
         resp.raise_for_status()
-        return Imposter(self.port, imposter_cfg['port'])
+        return Imposter(self.port, imposter_cfg['port'], host=self.host)
 
     def add_imposter_simple(self, port=None, method='GET',  # pylint: disable=too-many-arguments
                             path='/', status_code=200, response=''):
@@ -112,6 +109,60 @@ class Mountebank(HttpService):
         resp = requests.delete(self._imposters_url)
         resp.raise_for_status()
 
+    def start(self):
+        """Make sure the process is running and has a clean configuration"""
+        raise NotImplementedError()
+
+    def stop(self):
+        """Tear down the process if necessary"""
+        raise NotImplementedError()
+
+    def __enter__(self):
+        self.start()
+        return self
+
+    def __exit__(self, *args):
+        self.stop()
+
+
+class Mountebank(MountebankWrapper):
+    """Manages a Mountebank instance. Can start and stop the Mountebank process.
+
+    Args:
+        port (int): Port on which Mountebank is listening for imposter configuration commands.
+    """
+    def __init__(self, port=None):
+        process = HttpService(get_mb_command() + ['--mock', '--port', '{port}'], port)
+        super().__init__('localhost', process.port)
+        self.process = process
+
+    def start(self):
+        """Starts the Mountebank process"""
+        self.process.start()
+
+    def stop(self):
+        """Stops the Mountebank process"""
+        self.process.stop()
+
+
+class ExistingMountebank(MountebankWrapper):
+    """Manages existing Mountebank instance. Cannot start or stop the Mountebank process.
+
+    Args:
+        host (str): Host on which Mountebank is listening for imposter configuration commands.
+        port (int): Port on which Mountebank is listening.
+    """
+
+    def start(self):
+        """Reset the Mountebank process"""
+        wait_for_port(self.port, host=self.host)
+        self.reset()
+
+    def stop(self):
+        """Reset the Mountebank process"""
+        self.reset()
+
+
 class Imposter:
     """A Mountebank imposter. It can contain stubs of HTTP, HTTPS, TCP or SMTP services.
 
@@ -124,8 +175,8 @@ class Imposter:
         port (int): Port on localhost taken by this Imposter.
     """
 
-    def __init__(self, mountebank_port, port):
-        self.url = 'http://localhost:{}/imposters/{}'.format(mountebank_port, port)
+    def __init__(self, mountebank_port, port, host='localhost'):
+        self.url = 'http://{}:{}/imposters/{}'.format(host, mountebank_port, port)
         self.port = port
 
     def requests(self):
