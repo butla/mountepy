@@ -35,10 +35,16 @@ def test_service_single_string_command():
 
 
 def test_service_start_timeout_and_cleanup():
-    test_service = HttpService(SERVICE_COMMAND)
+    never_starting_service = os.path.join(os.path.dirname(__file__), 'never_starting_service.py')
+    test_service = HttpService([sys.executable, never_starting_service, '{port}'])
+
     with pytest.raises(TimeoutError):
-        test_service.start(timeout=0.001)
-    test_service._service_proc.wait(timeout=3.0)
+        # If this timeout is lower, then the test can sometimes fail.
+        # It looks like Python can ignore SIGINT in the early process startup,
+        # but this needs to be verified.
+        # This wouldn't be a problem with SIGTERM.
+        test_service.start(timeout=0.1)
+    test_service._service_proc.wait(timeout=1.0)
 
 
 def test_service_configuration_through_env_vars():
