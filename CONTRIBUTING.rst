@@ -16,6 +16,8 @@ while ``feat`` commits should change the minor version.
 After creating a commit, run `Tox`_ to make sure that you did everything OK.
 
 Remember to rebase onto master before submitting your pull request.
+Also, it's good to submit small pull requests with incremental changes that don't need implement
+an entire feature, in the spirit of `trunk-based development`_.
 
 Oh, and if you're contributing some documentation (README, docstrings),
 it's good to run it through a spell checker (`hunspell`_ is good for command-line usage)
@@ -41,4 +43,5 @@ will say that the commit needs to be in AngularJS format, because a merge commit
 .. _Deadsnakes repository: https://launchpad.net/~fkrull/+archive/ubuntu/deadsnakes
 .. _hunspell: https://hunspell.github.io/
 .. _Tox: https://tox.readthedocs.io/en/latest/
+.. _trunk-based development: https://www.thoughtworks.com/insights/blog/enabling-trunk-based-development-deployment-pipelines
 .. _versioned semantically: http://semver.org/
