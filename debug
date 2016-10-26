@@ -1,1 +1,0 @@
-for i in $(seq 500); do py.test -s tests/test_http_service.py::test_service_start_timeout_and_cleanup; if [ $? != 0 ]; then break; fi;  done
