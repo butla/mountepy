@@ -1,11 +1,12 @@
 import subprocess
+from unittest.mock import MagicMock
 
 import port_for
 import pytest
 import requests
 
-from mountepy import Mountebank, ExistingMountebank, HttpStub
-from mountepy.mountebank import MountebankWrapper
+from mountepy import ExistingMountebank, HttpStub, Mountebank
+from mountepy.mountebank import Imposter, MountebankWrapper
 from mountepy.mb_mgmt import get_mb_command
 
 
@@ -109,6 +110,14 @@ def test_impostor_get_matches_timeout():
         imposter = mb.add_imposter_simple()
         with pytest.raises(TimeoutError):
             imposter.wait_for_requests(timeout=0.001)
+
+
+def test_wait_for_impostor_requests():
+    impostor = Imposter(666, 666)
+    impostor.requests = MagicMock()
+    impostor.requests.side_effect = [[], ['fake-impostor-request']]
+
+    impostor.wait_for_requests(timeout=0.5)
 
 
 def test_mountebank_reset():
