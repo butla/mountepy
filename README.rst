@@ -8,7 +8,7 @@ mountepy
 .. image:: https://requires.io/github/butla/mountepy/requirements.svg?branch=master
     :target: https://requires.io/github/butla/mountepy/requirements/?branch=master
 
-Utilities for creating (micro)service tests. Based on `Mountebank <http://www.mbtest.org/>`_.
+Utilities for creating HTTP (micro)service tests. Based on `Mountebank <http://www.mbtest.org/>`_.
 
 Mountepy works by spawning and cleaning after given HTTP service
 processes and Mountebank. Thanks to that you no longer need that "start X
