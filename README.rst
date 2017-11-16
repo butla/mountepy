@@ -8,13 +8,6 @@ mountepy
 
 Utilities for creating HTTP (micro)service tests. Based on `Mountebank <http://www.mbtest.org/>`_.
 
-.. note::
-
-   As you can probably see, there's no build status icon. That's becaused Snap CI was
-   decommissioned and I didn't have the time to make a switch yet. But don't worry, the project
-   is stable and perfectly usable, it just doesn't require any code changes at the time. I use 
-   it at my company and it's infecting more and more projects :)
-
 Mountepy works by spawning and cleaning after given HTTP service
 processes and Mountebank. Thanks to that you no longer need that "start X
 before running the tests" for your application. No. Your tests start
@@ -33,6 +26,11 @@ need.
 I recommend Pytest for elastic composition of service process test
 fixtures. Your process may start once per test suite, once per test,
 etc.
+
+As you can probably see, there's no build status icon. That's becaused Snap CI was
+decommissioned and I didn't have the time to make a switch yet. But don't worry, the project
+is stable and perfectly usable, it just doesn't require any code changes at the time. I use 
+it at my company and it's infecting more and more projects :)
 
 Installation
 ------------
