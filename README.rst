@@ -1,14 +1,19 @@
 mountepy
 ========
 
-.. image:: https://snap-ci.com/butla/mountepy/branch/master/build_image
-    :target: https://snap-ci.com/butla/mountepy/branch/master
 .. image:: https://coveralls.io/repos/butla/mountepy/badge.svg?branch=master&service=github
     :target: https://coveralls.io/github/butla/mountepy?branch=master
 .. image:: https://requires.io/github/butla/mountepy/requirements.svg?branch=master
     :target: https://requires.io/github/butla/mountepy/requirements/?branch=master
 
 Utilities for creating HTTP (micro)service tests. Based on `Mountebank <http://www.mbtest.org/>`_.
+
+.. note::
+
+   As you can probably see, there's no build status icon. That's becaused Snap CI was
+   decommissioned and I didn't have the time to make a switch yet. But don't worry, the project
+   is stable and perfectly usable, it just doesn't require any code changes at the time. I use 
+   it at my company and it's infecting more and more projects :)
 
 Mountepy works by spawning and cleaning after given HTTP service
 processes and Mountebank. Thanks to that you no longer need that "start X
