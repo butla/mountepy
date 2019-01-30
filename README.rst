@@ -3,8 +3,6 @@ mountepy
 
 .. image:: https://coveralls.io/repos/butla/mountepy/badge.svg?branch=master&service=github
     :target: https://coveralls.io/github/butla/mountepy?branch=master
-.. image:: https://requires.io/github/butla/mountepy/requirements.svg?branch=master
-    :target: https://requires.io/github/butla/mountepy/requirements/?branch=master
 
 Utilities for creating HTTP (micro)service tests. Based on `Mountebank <http://www.mbtest.org/>`_.
 
